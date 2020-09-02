@@ -2,7 +2,6 @@ import * as path from 'path';
 import { Express, Request, Response, NextFunction } from 'express';
 const express = require('express');
 
-import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
@@ -20,46 +19,38 @@ app.listen(port, async () => {
   console.log(`IPFS Service is running on port ${port}`);
 });
 
-app.get('/api/v0/hello', getHello);
-
-app.get('/api/v0/pino', getPino);
-app.get('/api/v0/gino', getGino);
+app.get('/api/v0/makeAsset/:id', makeAsset);
+app.get('/api/v0/getAsset/:id', getAsset);
+app.get('/api/v0/getCID/enrico/:id', getCID);
 
 // API Functions
 MyIPFS.start();
 
-async function getHello(req: Request, res: Response, next: NextFunction) {
-  let p = await MyIPFS.getHello('pino');
-
-  let pino = JSON.parse(p);
-
-  console.log(`Pino : ${pino}`);
-
-  let g = await MyIPFS.getHello('gino');
-
-  let gino = JSON.parse(g);
-
-  console.log(`Gino : ${gino}`);
-
-  res.json(pino);
+async function makeAsset(req: Request, res: Response, next: NextFunction) {
+  let a = await MyIPFS.makeAsset(req.params.id);
+  let asset = JSON.parse(a);
+  console.log(`Asset : ${asset}`);
+  res.json(asset);
 }
 
-async function getPino(req: Request, res: Response, next: NextFunction) {
-  let p = await MyIPFS.getHello('pino');
+async function getAsset(req: Request, res: Response, next: NextFunction) {
 
-  let pino = JSON.parse(p);
+     let g = await MyIPFS.getAsset(req.params.id)
 
-  console.log(`Pino : ${pino}`);
+     console.log('G: ', g)
 
-  res.json(pino);
-}
+     let content = g.toString()
 
-async function getGino(req: Request, res: Response, next: NextFunction) {
-  let g = await MyIPFS.getHello('gino');
+     res.send(content)
+    }
 
-  let gino = JSON.parse(g);
+async function getCID(req: Request, res: Response, next: NextFunction) {
 
-  console.log(`Gino : ${gino}`);
+  
+  const stats = await MyIPFS.getCID('/enrico/' + req.params.id)
+  console.log('API CID: ', stats['cid'])
 
-  res.json(gino);
+  let cid = stats['cid']
+  res.send(cid)
+
 }

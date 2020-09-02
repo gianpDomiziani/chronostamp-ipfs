@@ -15,6 +15,8 @@
   "author": "Enrico Zanardo",
   "license": "MIT",
   "dependencies": {
+    "@types/bl": "^2.1.0",
+    "bl": "^4.0.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
